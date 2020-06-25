@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(MainActivity.this, "Berhasil Login", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), Beranda.class);
+                            startActivity(intent);
                         }else{
                             Toast.makeText(MainActivity.this, "Gagal Login, Cek Email dan Password", Toast.LENGTH_SHORT).show();
                         }
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 //            Toast.makeText(this, personName, Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(getApplicationContext(), Beranda.class);
-            intent.putExtra("name", personName);
+//            intent.putExtra("name", personName);
             startActivity(intent);
         }
     }
