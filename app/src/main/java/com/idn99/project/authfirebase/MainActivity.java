@@ -26,6 +26,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText edtEmail, edtPass;
@@ -69,12 +72,21 @@ public class MainActivity extends AppCompatActivity {
                     edtEmail.setError("Email tidak boleh kosong");
                 }else if (edtPass.getText().toString().isEmpty()){
                     edtPass.setError("Password tidak boleh kosong");
+                }else if (!isEmailValid(edtEmail.getText().toString())){
+                    edtEmail.setError("Email Tidak Valid");
                 }else{
                     loginCek();
                 }
             }
         });
 
+    }
+
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     private void loginCek(){
@@ -107,14 +119,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount gsi = completedTask.getResult(ApiException.class);
 //            Toast.makeText(this, "Berhasil Login", Toast.LENGTH_SHORT).show();
-            FirebaseGoogleAuth(gsi);
+            firebaseGoogleAuth(gsi);
         }catch (ApiException e){
             Toast.makeText(this, "Gagal Login", Toast.LENGTH_SHORT).show();
-            FirebaseGoogleAuth(null);
+//            firebaseGoogleAuth(null);
         }
     }
 
-    private void FirebaseGoogleAuth(GoogleSignInAccount gsi){
+    private void firebaseGoogleAuth(GoogleSignInAccount gsi){
         AuthCredential authCredential = GoogleAuthProvider.getCredential(gsi.getIdToken(), null);
         auth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -125,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                     updateUI(user);
                 }else{
                     Toast.makeText(MainActivity.this, "Gagal Login", Toast.LENGTH_SHORT).show();
-                    updateUI(null);
+//                    updateUI(null);
                 }
             }
         });
@@ -145,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = new Intent(getApplicationContext(), Beranda.class);
 //            intent.putExtra("name", personName);
+            finish();
             startActivity(intent);
         }
     }
